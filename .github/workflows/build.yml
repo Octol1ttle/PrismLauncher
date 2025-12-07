@@ -163,10 +163,6 @@ jobs:
         run: |
           cmake --preset "$CMAKE_PRESET" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
-      - name: Run build
-        run: |
-          cmake --build --preset "$CMAKE_PRESET" --config "$BUILD_TYPE"
-
       - name: Check with clang-tidy
         if: ${{ matrix.os == 'ubuntu-22.04' }} # Only run once per job on Linux
         uses: cpp-linter/cpp-linter-action@v2
@@ -179,6 +175,10 @@ jobs:
           lines-changed-only: true
           tidy-review: true
           passive-reviews: true
+
+      - name: Run build
+        run: |
+          cmake --build --preset "$CMAKE_PRESET" --config "$BUILD_TYPE"
 
       - name: Run tests
         run: |

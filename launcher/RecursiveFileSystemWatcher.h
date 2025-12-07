@@ -40,7 +40,7 @@ class RecursiveFileSystemWatcher : public QObject {
     void setFiles(const QStringList& files);
 
     void addFilesToWatcherRecursive(const QDir& dir);
-    QStringList scanRecursive(const QDir& dir);
+    QStringList scanTmp(const QDir& dir);
 
    private slots:
     void fileChange(const QString& path);

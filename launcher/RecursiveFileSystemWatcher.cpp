@@ -10,11 +10,11 @@ RecursiveFileSystemWatcher::RecursiveFileSystemWatcher(QObject* parent) : QObjec
 
 void RecursiveFileSystemWatcher::setRootDir(const QDir& root)
 {
-    bool wasEnabled = m_isEnabled;
+    bool tmp = m_isEnabled;
     disable();
     m_root = root;
-    setFiles(scanRecursive(m_root));
-    if (wasEnabled) {
+    setFiles(scanTmp(m_root));
+    if (tmp) {
         enable();
     }
 }
@@ -67,14 +67,14 @@ void RecursiveFileSystemWatcher::addFilesToWatcherRecursive(const QDir& dir)
         }
     }
 }
-QStringList RecursiveFileSystemWatcher::scanRecursive(const QDir& directory)
+QStringList RecursiveFileSystemWatcher::scanTmp(const QDir& directory)
 {
     QStringList ret;
     if (!m_matcher) {
         return {};
     }
     for (const QString& dir : directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden)) {
-        ret.append(scanRecursive(directory.absoluteFilePath(dir)));
+        ret.append(scanTmp(directory.absoluteFilePath(dir)));
     }
     for (const QString& file : directory.entryList(QDir::Files | QDir::Hidden)) {
         auto relPath = m_root.relativeFilePath(directory.absoluteFilePath(file));
@@ -91,5 +91,5 @@ void RecursiveFileSystemWatcher::fileChange(const QString& path)
 }
 void RecursiveFileSystemWatcher::directoryChange([[maybe_unused]] const QString& path)
 {
-    setFiles(scanRecursive(m_root));
+    setFiles(scanTmp(m_root));
 }
