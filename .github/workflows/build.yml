@@ -159,7 +159,29 @@ jobs:
 
       - name: Configure project
         run: |
-          cmake --preset "$CMAKE_PRESET"
+          cmake --preset "$CMAKE_PRESET" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run clang-tidy
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if command -v clang-tidy &>/dev/null; then
+            FILES=$(gh -R ${{ github.repository }} pr diff ${{ github.event.pull_request.number }} --name-only | grep -E '\.(cpp|h)$' || true)
+          
+            if [ -n "$FILES" ]; then
+              echo "$FILES" | xargs clang-tidy -p=build/ --fix-errors --quiet --warnings-as-errors='*'
+            else
+              echo "No source files changed, skipping"
+            fi
+          else
+            echo "clang-tidy is not present, skipping"
+          fi
+
+      - name: Show diff of clang-tidy autofixes
+        if: always()
+        run:
+          git diff
 
       - name: Run build
         run: |
