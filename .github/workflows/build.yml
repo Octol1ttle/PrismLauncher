@@ -168,6 +168,7 @@ jobs:
           cmake --build --preset "$CMAKE_PRESET" --config "$BUILD_TYPE"
 
       - name: Check with clang-tidy
+        if: ${{ matrix.os == 'ubuntu-22.04' }} # Only run once per job on Linux
         uses: cpp-linter/cpp-linter-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
