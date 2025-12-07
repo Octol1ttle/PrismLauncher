@@ -74,6 +74,8 @@ jobs:
       id-token: write
       # Required for vcpkg binary cache
       packages: write
+      # Required for clang-tidy reviews
+      pull-requests: write
 
     strategy:
       fail-fast: false
@@ -159,11 +161,23 @@ jobs:
 
       - name: Configure project
         run: |
-          cmake --preset "$CMAKE_PRESET"
+          cmake --preset "$CMAKE_PRESET" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Run build
         run: |
           cmake --build --preset "$CMAKE_PRESET" --config "$BUILD_TYPE"
+
+      - name: Check with clang-tidy
+        uses: cpp-linter/cpp-linter-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          database: 'build'
+          style: 'file'  # Use .clang-format config file.
+          tidy-checks: '' # Use .clang-tidy config file.
+          lines-changed-only: true
+          tidy-review: true
+          passive-reviews: true
 
       - name: Run tests
         run: |

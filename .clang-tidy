@@ -1,3 +1,5 @@
+FormatStyle: file
+
 Checks:
   'bugprone-*,clang-analyzer-*,cppcoreguidelines-*,misc-*,modernize-*,performance-*,portability-*,readability-*,
   -cppcoreguidelines-owning-memory,
