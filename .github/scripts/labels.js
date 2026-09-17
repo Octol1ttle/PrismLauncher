@@ -22,6 +22,12 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function checkPullForConflict(github, owner, repo, number) {
     const {data: pull} = await github.rest.pulls.get({owner, repo, number});
 
+    console.log('pull is')
+    console.log(pull)
+
+    console.log('mergeable is')
+    console.log(pull.mergeable)
+
     if (pull.mergeable === null) {
         return false;
     }
@@ -48,6 +54,8 @@ async function checkPullsForConflicts(github, context) {
         state: 'open',
         base: BASE_BRANCH
     }, (response) => response.data.map(pull => pull.number))) {
+        console.log('number is')
+        console.log(number)
         if (!(await checkPullForConflict(github, owner, repo, number))) {
             mergeablePending.push(number);
         }
