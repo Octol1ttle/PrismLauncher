@@ -1,6 +1,6 @@
 module.exports = async ({github, context, core}) => {
     if (context.eventName === 'push') {
-        await checkPullsForConflicts(github)
+        await checkPullsForConflicts(github, context)
         return;
     }
 }
