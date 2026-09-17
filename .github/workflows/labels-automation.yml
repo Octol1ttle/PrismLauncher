@@ -19,12 +19,13 @@ jobs:
   run-labels-script:
     name: Run script
     runs-on: ubuntu-slim
-    if: github.repository_owner == 'PrismLauncher'
+    #if: github.repository_owner == 'PrismLauncher'
 
     steps:
       - name: Generate token
         id: generate-token
         uses: actions/create-github-app-token@v3
+        if: github.repository_owner == 'PrismLauncher'
         with:
           app-id: ${{ vars.PULL_REQUEST_APP_ID }}
           private-key: ${{ secrets.PULL_REQUEST_APP_PRIVATE_KEY }}
