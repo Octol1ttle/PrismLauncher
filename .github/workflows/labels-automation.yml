@@ -13,7 +13,8 @@ on:
       - opened
       - synchronize
 
-permissions: {}
+permissions:
+  pull-requests: write
 
 jobs:
   run-labels-script:
