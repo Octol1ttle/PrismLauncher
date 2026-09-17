@@ -47,17 +47,21 @@ async function checkPullsForConflicts(github, context) {
     const owner = context.payload.repository.owner.login;
     const repo = context.payload.repository.name;
 
-    const mergeablePending = []
-    for await (const number of github.paginate.iterator(github.rest.pulls.list, {
+    const iterator = github.paginate.iterator(github.rest.pulls.list, {
         owner,
         repo,
         state: 'open',
         base: BASE_BRANCH
-    }, (response) => response.data.map(pull => pull.number))) {
-        console.log('number is')
-        console.log(number)
-        if (!(await checkPullForConflict(github, owner, repo, number))) {
-            mergeablePending.push(number);
+    });
+    const mergeablePending = []
+    for await (const response of iterator) {
+        // The 'mergeable' property is not sent when using the 'List pull requests' method
+        for (const number of response.data.map(pull => pull.number)) {
+            console.log('number is')
+            console.log(number)
+            if (!(await checkPullForConflict(github, owner, repo, number))) {
+                mergeablePending.push(number);
+            }
         }
     }
 
