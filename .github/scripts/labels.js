@@ -7,7 +7,7 @@ module.exports = async ({github, context, core}) => {
 
 async function checkPullsForConflicts(github, context) {
     for await (const pull of github.paginate.iterator(github.rest.pulls.list, {
-        owner: context.payload.repository.owner,
+        owner: context.payload.repository.owner.login,
         repo: context.payload.repository.name,
         state: 'open'
     })) {
