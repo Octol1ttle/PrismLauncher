@@ -1,6 +1,16 @@
 module.exports = async ({github, context, core}) => {
-    console.log('in script')
-    const pr_number = process.env.PR_NUMBER
-    console.log('the pr number is')
-    console.log(pr_number)
+    if (context.eventName === 'push') {
+        await checkPullsForConflicts(github)
+        return;
+    }
+}
+
+async function checkPullsForConflicts(github, context) {
+    for await (const pull of github.paginate.iterator(github.rest.pulls.list, {
+        owner: context.repository.owner,
+        repo: context.repository.name,
+        state: 'open'
+    })) {
+        console.log(pull.mergeable)
+    }
 }

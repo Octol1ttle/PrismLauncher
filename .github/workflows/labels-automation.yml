@@ -38,13 +38,9 @@ jobs:
 
       - name: Run labeling script
         uses: actions/github-script@v9
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
         with:
           github-token: ${{ steps.generate-token.outputs.token || github.token }}
           retries: 3
           script: |
             const script = require('.github/scripts/labels.js')
-            console.log(script)
-            console.log('about to run script')
             await script({github, context, core})
