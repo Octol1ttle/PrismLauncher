@@ -45,4 +45,5 @@ jobs:
           retries: 3
           script: |
             const script = require('.github/scripts/labels.js')
+            console.log(script)
             await script({github, context, core})
