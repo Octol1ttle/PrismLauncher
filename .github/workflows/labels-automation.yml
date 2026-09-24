@@ -14,17 +14,19 @@ on:
       - synchronize
       - edited
 
-permissions: {}
+permissions:
+  pull-requests: write
 
 jobs:
   run-labels-script:
     name: Run script
     runs-on: ubuntu-slim
-    if: github.repository_owner == 'PrismLauncher'
+    #if: github.repository_owner == 'PrismLauncher'
 
     steps:
       - name: Generate token
         id: generate-token
+        if: github.repository_owner == 'PrismLauncher'
         uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.PULL_REQUEST_APP_ID }}
